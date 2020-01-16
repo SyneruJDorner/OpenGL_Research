@@ -16,6 +16,7 @@
 # Visual Studio Files
 Debug
 Release
+*.db
 *.suo
 *.csproj.user
 *.vbproj.user
