@@ -7,6 +7,22 @@ Window::Window()
 {
 	width = 800;
 	height = 600;
+
+	for (size_t i = 0; i < 1024; i++)
+	{
+		keys[i] = 0;
+	}
+}
+
+Window::Window(GLint windowWidth, GLint windowHeight)
+{
+	width = windowWidth;
+	height = windowHeight;
+
+	for (size_t i = 0; i < 1024; i++)
+	{
+		keys[i] = 0;
+	}
 }
 
 Window::~Window()
@@ -15,10 +31,61 @@ Window::~Window()
 	glfwTerminate();
 }
 
-Window::Window(GLint windowWidth, GLint windowHeight)
+void Window::createCallbacks()
 {
-	width = windowWidth;
-	height = windowHeight;
+	glfwSetKeyCallback(window, handleKeys);
+	glfwSetCursorPosCallback(window, handleMouse);
+}
+
+GLfloat Window::getXChange()
+{
+	GLfloat change = xChange;
+	xChange = 0;
+	return change;
+}
+
+GLfloat Window::getYChange()
+{
+	GLfloat change = yChange;
+	yChange = 0;
+	return change;
+
+}
+
+void Window::handleKeys(GLFWwindow* window, int key, int code, int action, int mode)
+{
+	Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	{
+		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
+
+	if (key >= 0 && key < 1024)
+	{
+		if (action == GLFW_PRESS)
+			win->keys[key] = true;
+		else if (action == GLFW_RELEASE)
+			win->keys[key] = false;
+	}
+}
+
+void Window::handleMouse(GLFWwindow* window, double xPos, double yPos)
+{
+	Window* win = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+	if (win->mouseFirstMoved)
+	{
+		win->lastX = xPos;
+		win->lastY = yPos;
+		win->mouseFirstMoved = false;
+	}
+
+	win->xChange = xPos - win->lastX;
+	win->yChange = win->lastY - yPos;
+
+	win->lastX = xPos;
+	win->lastY = yPos;
 }
 
 int Window::Initialize()
@@ -56,6 +123,10 @@ int Window::Initialize()
 	//Set context for GLEW to use
 	glfwMakeContextCurrent(window);
 
+	//Handle Key + Mouse Input
+	createCallbacks();
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	//Allow modern extension features
 	glewExperimental = GL_TRUE;
 
@@ -71,4 +142,6 @@ int Window::Initialize()
 
 	//Setup Viewport Size
 	glViewport(0, 0, bufferWidth, bufferHeight);
+
+	glfwSetWindowUserPointer(window, this);
 }
