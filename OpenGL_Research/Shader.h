@@ -18,7 +18,7 @@ public:
 	void CreateFromFiles(const char* vertexLocation, const char* fragmentLocation);
 	std::string ReadFile(const char* fileLocation);
 
-	GLuint GetProjectionLoction();
+	GLuint GetProjectionLocation();
 	GLuint GetModelLocation();
 	GLuint GetViewLocation();
 

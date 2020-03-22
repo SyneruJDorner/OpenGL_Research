@@ -49,7 +49,7 @@ void Shader::CreateFromFiles(const char* vertexLocation, const char* fragmentLoc
 	CompilerShader(vertexCode, fragmentCode);
 }
 
-GLuint Shader::GetProjectionLoction()
+GLuint Shader::GetProjectionLocation()
 {
 	return uniformProjection;
 }
