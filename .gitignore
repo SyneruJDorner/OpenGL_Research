@@ -24,3 +24,5 @@ Release
 ipch
 *sdf
 
+#include
+!External Libs/GLEW/lib/Release
