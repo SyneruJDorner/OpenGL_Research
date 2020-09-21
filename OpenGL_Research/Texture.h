@@ -6,9 +6,9 @@ class Texture
 {
 public:
 	Texture();
-	Texture(char* fileLoc);
+	Texture(const char* fileLoc);
 	~Texture();
-	void LoadTexture();
+	bool LoadTexture(bool alpha = false);
 	void UseTexture();
 	void ClearTexture();
 
