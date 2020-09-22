@@ -1,5 +1,7 @@
 #include "Texture.h"
 
+
+
 Texture::Texture()
 {
 	textureID = 0;
@@ -18,14 +20,9 @@ Texture::Texture(const char* fileLoc)
 	fileLocation = fileLoc;
 }
 
-Texture::~Texture()
+bool Texture::LoadTexture(bool hasAlpha)
 {
-	ClearTexture();
-}
-
-bool Texture::LoadTexture(bool alpha)
-{
-	unsigned char* texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
+	unsigned char *texData = stbi_load(fileLocation, &width, &height, &bitDepth, 0);
 	if (!texData)
 	{
 		printf("Failed to find: %s\n", fileLocation);
@@ -40,16 +37,16 @@ bool Texture::LoadTexture(bool alpha)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-	if (alpha == false)
+	if (hasAlpha == false)
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texData);
 	else
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
-
 	glGenerateMipmap(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	stbi_image_free(texData);
+
 	return true;
 }
 
@@ -67,4 +64,10 @@ void Texture::ClearTexture()
 	height = 0;
 	bitDepth = 0;
 	fileLocation = "";
+}
+
+
+Texture::~Texture()
+{
+	ClearTexture();
 }

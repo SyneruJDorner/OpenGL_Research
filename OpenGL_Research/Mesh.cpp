@@ -8,12 +8,7 @@ Mesh::Mesh()
 	indexCount = 0;
 }
 
-Mesh::~Mesh()
-{
-	ClearMesh();
-}
-
-void Mesh::CreateMesh(GLfloat* vertices, unsigned int* indices, unsigned int numOfVertices, unsigned int numOfIndices)
+void Mesh::CreateMesh(GLfloat *vertices, unsigned int *indices, unsigned int numOfVertices, unsigned int numOfIndices)
 {
 	indexCount = numOfIndices;
 
@@ -71,4 +66,10 @@ void Mesh::ClearMesh()
 	}
 
 	indexCount = 0;
+}
+
+
+Mesh::~Mesh()
+{
+	ClearMesh();
 }

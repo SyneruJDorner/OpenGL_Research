@@ -1,26 +1,19 @@
 #include "Camera.h"
 
-Camera::Camera()
-{
+Camera::Camera() {}
 
-}
-
-Camera::Camera(glm::vec3 startPos, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat startPosSpeed, GLfloat startRotSpeed)
+Camera::Camera(glm::vec3 startPosition, glm::vec3 startUp, GLfloat startYaw, GLfloat startPitch, GLfloat startMoveSpeed, GLfloat startTurnSpeed)
 {
-	position = startPos;
+	position = startPosition;
 	worldUp = startUp;
 	yaw = startYaw;
 	pitch = startPitch;
-	forward = glm::vec3(0.0f, 0.0f, -1.0f);
-	moveSpeed = startPosSpeed;
-	turnSpeed = startRotSpeed;
+	front = glm::vec3(0.0f, 0.0f, -1.0f);
 
-	Update();
-}
+	moveSpeed = startMoveSpeed;
+	turnSpeed = startTurnSpeed;
 
-Camera::~Camera()
-{
-
+	update();
 }
 
 void Camera::keyControl(bool* keys, GLfloat deltaTime)
@@ -29,12 +22,12 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 
 	if (keys[GLFW_KEY_W])
 	{
-		position += forward * velocity;
+		position += front * velocity;
 	}
 
 	if (keys[GLFW_KEY_S])
 	{
-		position -= forward * velocity;
+		position -= front * velocity;
 	}
 
 	if (keys[GLFW_KEY_A])
@@ -48,7 +41,7 @@ void Camera::keyControl(bool* keys, GLfloat deltaTime)
 	}
 }
 
-void Camera::MouseControl(GLfloat xChange, GLfloat yChange)
+void Camera::mouseControl(GLfloat xChange, GLfloat yChange)
 {
 	xChange *= turnSpeed;
 	yChange *= turnSpeed;
@@ -57,36 +50,44 @@ void Camera::MouseControl(GLfloat xChange, GLfloat yChange)
 	pitch += yChange;
 
 	if (pitch > 89.0f)
+	{
 		pitch = 89.0f;
+	}
 
 	if (pitch < -89.0f)
+	{
 		pitch = -89.0f;
+	}
 
-	Update();
+	update();
+}
+
+glm::mat4 Camera::calculateViewMatrix()
+{
+	return glm::lookAt(position, position + front, up);
 }
 
 glm::vec3 Camera::getCameraPosition()
 {
 	return position;
 }
-
 glm::vec3 Camera::getCameraDirection()
 {
-	return glm::normalize(forward);
+	return glm::normalize(front);
 }
 
-glm::mat4 Camera::calculateViewMatrix()
+void Camera::update()
 {
-	return glm::lookAt(position, position + forward, up);
+	front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front.y = sin(glm::radians(pitch));
+	front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+	front = glm::normalize(front);
+
+	right = glm::normalize(glm::cross(front, worldUp));
+	up = glm::normalize(glm::cross(right, front));
 }
 
-void Camera::Update()
-{
-	forward.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-	forward.y = sin(glm::radians(pitch));
-	forward.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-	forward = glm::normalize(forward);
 
-	right = glm::normalize(glm::cross(forward, worldUp));
-	up = glm::normalize(glm::cross(right, forward));
+Camera::~Camera()
+{
 }
