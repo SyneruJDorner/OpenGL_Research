@@ -143,6 +143,65 @@ void CreateShaders()
 	directionalShadowShader.CreateFromFiles("Shaders/directional_shadow_map.vert", "Shaders/directional_shadow_map.frag");
 }
 
+void Init()
+{
+	mainWindow = Window(1400, 900); // 1280, 1024 or 1024, 768
+	mainWindow.Initialize();
+
+	CreateObjects();
+	CreateShaders();
+
+	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
+
+	brickTexture = Texture((char*)("Textures/brick.png"));
+	brickTexture.LoadTexture(true);
+	dirtTexture = Texture((char*)("Textures/dirt.png"));
+	dirtTexture.LoadTexture(true);
+	plainTexture = Texture((char*)("Textures/plain.png"));
+	plainTexture.LoadTexture(true);
+
+	shinyMaterial = Material(4.0f, 256);
+	dullMaterial = Material(0.3f, 4);
+
+	skull = Model();
+	skull.LoadModel("Models/12140_Skull_v3_L2.obj");
+
+	hand = Model();
+	hand.LoadModel("Models/hand.obj");
+
+	mainLight = DirectionalLight(2048, 2048,
+		1.0f, 1.0f, 1.0f,
+		0.1f, 0.3f,
+		0.0f, -15.0f, -10.0f);
+
+	pointLights[0] = PointLight(0.0f, 0.0f, 1.0f,
+		0.0f, 0.1f,
+		0.0f, 0.0f, 0.0f,
+		0.3f, 0.2f, 0.1f);
+	pointLightCount++;
+	pointLights[1] = PointLight(0.0f, 1.0f, 0.0f,
+		0.0f, 0.1f,
+		-4.0f, 2.0f, 0.0f,
+		0.3f, 0.1f, 0.1f);
+	pointLightCount++;
+
+
+	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
+		0.0f, 2.0f,
+		0.0f, 0.0f, 0.0f,
+		0.0f, -1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		20.0f);
+	spotLightCount++;
+	spotLights[1] = SpotLight(1.0f, 1.0f, 1.0f,
+		0.0f, 1.0f,
+		0.0f, -1.5f, 0.0f,
+		-100.0f, -1.0f, 0.0f,
+		1.0f, 0.0f, 0.0f,
+		20.0f);
+	spotLightCount++;
+}
+
 void RenderScene()
 {
 	glm::mat4 model(1.0f);
@@ -240,62 +299,7 @@ void RenderPass(glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 
 int main()
 {
-	mainWindow = Window(1400, 900); // 1280, 1024 or 1024, 768
-	mainWindow.Initialize();
-
-	CreateObjects();
-	CreateShaders();
-
-	camera = Camera(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f), -60.0f, 0.0f, 5.0f, 0.5f);
-
-	brickTexture = Texture((char*)("Textures/brick.png"));
-	brickTexture.LoadTexture(true);
-	dirtTexture = Texture((char*)("Textures/dirt.png"));
-	dirtTexture.LoadTexture(true);
-	plainTexture = Texture((char*)("Textures/plain.png"));
-	plainTexture.LoadTexture(true);
-
-	shinyMaterial = Material(4.0f, 256);
-	dullMaterial = Material(0.3f, 4);
-
-	skull = Model();
-	skull.LoadModel("Models/12140_Skull_v3_L2.obj");
-
-	hand = Model();
-	hand.LoadModel("Models/hand.obj");
-
-	mainLight = DirectionalLight(2048, 2048,
-		1.0f, 1.0f, 1.0f,
-		0.1f, 0.3f,
-		0.0f, -15.0f, -10.0f);
-
-	pointLights[0] = PointLight(0.0f, 0.0f, 1.0f,
-		0.0f, 0.1f,
-		0.0f, 0.0f, 0.0f,
-		0.3f, 0.2f, 0.1f);
-	pointLightCount++;
-	pointLights[1] = PointLight(0.0f, 1.0f, 0.0f,
-		0.0f, 0.1f,
-		-4.0f, 2.0f, 0.0f,
-		0.3f, 0.1f, 0.1f);
-	pointLightCount++;
-
-
-	spotLights[0] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.0f, 2.0f,
-		0.0f, 0.0f, 0.0f,
-		0.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		20.0f);
-	spotLightCount++;
-	spotLights[1] = SpotLight(1.0f, 1.0f, 1.0f,
-		0.0f, 1.0f,
-		0.0f, -1.5f, 0.0f,
-		-100.0f, -1.0f, 0.0f,
-		1.0f, 0.0f, 0.0f,
-		20.0f);
-	spotLightCount++;
-
+	Init();
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), (GLfloat)mainWindow.GetBufferWidth() / mainWindow.GetBufferHeight(), 0.1f, 100.0f);
 
 	// Loop until window closed
