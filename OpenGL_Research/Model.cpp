@@ -114,7 +114,7 @@ void Model::LoadMaterials(const aiScene * scene)
 
 		if (!textureList[i])
 		{
-			textureList[i] = new Texture("Textures/plain.png");
+			textureList[i] = new Texture("Textures/missing_texture.jpg");
 			textureList[i]->LoadTexture();
 		}
 	}
